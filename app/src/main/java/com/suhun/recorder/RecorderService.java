@@ -18,7 +18,7 @@ public class RecorderService extends Service {
 
     public RecorderService() {
         saveDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
-        rFile = new File(rFile, "tempName.3gp");
+        rFile = new File(saveDir, "suhun.3gp");
     }
 
     @Override
@@ -35,6 +35,13 @@ public class RecorderService extends Service {
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         mediaRecorder.setOutputFile(rFile);
+        try {
+            mediaRecorder.prepare();
+            mediaRecorder.start();
+            Log.d(tag, "-----Start Record.....-----");
+        }catch (Exception e){
+            Log.d(tag, "-----Error Exception in prepare " + e.toString());
+        }
     }
 
     @Override
@@ -45,5 +52,12 @@ public class RecorderService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if(mediaRecorder!=null){
+            mediaRecorder.stop();
+            mediaRecorder.reset();
+            mediaRecorder.release();
+            mediaRecorder = null;
+            Log.d(tag, "-----Stop Record.....-----");
+        }
     }
 }
