@@ -1,7 +1,12 @@
 package com.suhun.recorder;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -17,8 +22,44 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
+        if(checkUserAgreePermissionAboutRecorder()){
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO}, 123);
+        }else{
+            initRecorder();
+        }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == 123){
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED
+            && grantResults[2] == PackageManager.PERMISSION_GRANTED){
+                initRecorder();
+            }else{
+                finish();
+            }
+        }
+    }
+
+    private boolean checkUserAgreePermissionAboutRecorder(){
+        boolean result = false;
+        /*如果有一項使用者權限不同意，回傳true，發送請求請使用者同意*/
+        if(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED ||
+                ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED ||
+                ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_DENIED){
+            result = true;
+        }
+        return result;
+    }
+
+    private void initRecorder(){
+
+    }
     private void initView(){
         recordTime = findViewById(R.id.lid_recordTime);
         path = findViewById(R.id.lid_path);
