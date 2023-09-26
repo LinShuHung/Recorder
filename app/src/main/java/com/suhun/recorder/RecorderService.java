@@ -3,15 +3,22 @@ package com.suhun.recorder;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaRecorder;
+import android.os.Environment;
 import android.os.IBinder;
+import android.util.Log;
+
+import java.io.File;
 
 import javax.xml.transform.Source;
 
 public class RecorderService extends Service {
     private String tag = RecorderService.class.getSimpleName();
     private MediaRecorder mediaRecorder;
+    private File saveDir, rFile;
 
     public RecorderService() {
+        saveDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
+        rFile = new File(rFile, "tempName.3gp");
     }
 
     @Override
@@ -27,6 +34,7 @@ public class RecorderService extends Service {
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        mediaRecorder.setOutputFile(rFile);
     }
 
     @Override
