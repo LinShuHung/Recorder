@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView recordTime, path;
     private Button startBtn;
     private MyReciver myReciver;
+    private boolean isPlay;
 
     private class MyReciver extends BroadcastReceiver{
         @Override
@@ -112,7 +113,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void playFun(){
-
+        isPlay = !isPlay;
+        if(isPlay){
+            startBtn.setText("Pause");
+        }else{
+            startBtn.setText("Start");
+        }
     }
 
     public void stopPlayFun(View view){
