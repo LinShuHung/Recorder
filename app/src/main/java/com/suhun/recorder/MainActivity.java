@@ -6,7 +6,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +20,17 @@ public class MainActivity extends AppCompatActivity {
     private String tag = MainActivity.class.getSimpleName();
     private TextView recordTime, path;
     private Button startBtn;
+    private MyReciver myReciver;
+
+    private class MyReciver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int recordSecond = intent.getIntExtra("recordSecond", -1);
+            if(recordSecond > 0){
+                recordTime.setText("" + recordSecond+"秒");
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +43,20 @@ public class MainActivity extends AppCompatActivity {
         }else{
             initRecorder();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        myReciver = new MyReciver();
+        IntentFilter intentFilter = new IntentFilter("record");
+        registerReceiver(myReciver, intentFilter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(myReciver);
     }
 
     @Override

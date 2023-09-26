@@ -8,6 +8,8 @@ import android.os.IBinder;
 import android.util.Log;
 
 import java.io.File;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.xml.transform.Source;
 
@@ -15,6 +17,8 @@ public class RecorderService extends Service {
     private String tag = RecorderService.class.getSimpleName();
     private MediaRecorder mediaRecorder;
     private File saveDir, rFile;
+    private int second;
+    private Timer timer;
 
     public RecorderService() {
         saveDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
@@ -30,6 +34,8 @@ public class RecorderService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        second = 0;
+        timer = new Timer();
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -39,6 +45,15 @@ public class RecorderService extends Service {
             mediaRecorder.prepare();
             mediaRecorder.start();
             Log.d(tag, "-----Start Record.....-----");
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    second++;
+                    Intent intent = new Intent("record");
+                    intent.putExtra("recordSecond", second);
+                    sendBroadcast(intent);
+                }
+            }, 100, 1000);
         }catch (Exception e){
             Log.d(tag, "-----Error Exception in prepare " + e.toString());
         }
@@ -58,6 +73,11 @@ public class RecorderService extends Service {
             mediaRecorder.release();
             mediaRecorder = null;
             Log.d(tag, "-----Stop Record.....-----");
+        }
+        if(timer != null){
+            timer.cancel();
+            timer.purge();
+            timer = null;
         }
     }
 }
