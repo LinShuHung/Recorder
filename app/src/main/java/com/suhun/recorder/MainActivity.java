@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -27,9 +28,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             int recordSecond = intent.getIntExtra("recordSecond", -1);
+            String audioPath = intent.getStringExtra("path");
             if(recordSecond > 0){
                 recordTime.setText("" + recordSecond+"秒");
             }
+            path.setText(audioPath);
         }
     }
 
@@ -119,9 +122,13 @@ public class MainActivity extends AppCompatActivity {
         }else{
             startBtn.setText("Start");
         }
+        Intent intent = new Intent(this, PlayerService.class);
+        intent.putExtra("playStatus", isPlay);
+        startService(intent);
     }
 
     public void stopPlayFun(View view){
-
+        Intent intent = new Intent(this, PlayerService.class);
+        stopService(intent);
     }
 }
