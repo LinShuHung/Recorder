@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
@@ -73,11 +74,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startRecorderFun(View view){
-
+        Intent intent = new Intent(this, RecorderService.class);
+        startService(intent);
     }
 
     public void stopRecorderFun(View view){
-
+        Intent intent = new Intent(this, RecorderService.class);
+        stopService(intent);
     }
 
     private void playFun(){

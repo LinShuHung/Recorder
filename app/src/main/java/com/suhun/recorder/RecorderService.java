@@ -2,9 +2,15 @@ package com.suhun.recorder;
 
 import android.app.Service;
 import android.content.Intent;
+import android.media.MediaRecorder;
 import android.os.IBinder;
 
+import javax.xml.transform.Source;
+
 public class RecorderService extends Service {
+    private String tag = RecorderService.class.getSimpleName();
+    private MediaRecorder mediaRecorder;
+
     public RecorderService() {
     }
 
@@ -17,6 +23,10 @@ public class RecorderService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        mediaRecorder = new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
     }
 
     @Override
